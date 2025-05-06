@@ -8,6 +8,7 @@
                     v-model="form.name"
                     placeholder="Name"
                     class="w-full p-2 border border-gray-300 rounded-md"
+                    required
                 />
             </div>
             <div>
@@ -16,6 +17,7 @@
                     type="email"
                     placeholder="Email"
                     class="w-full p-2 border border-gray-300 rounded-md"
+                    required
                 />
             </div>
             <div>
@@ -24,6 +26,7 @@
                     type="password"
                     placeholder="Password"
                     class="w-full p-2 border border-gray-300 rounded-md"
+                    required
                 />
             </div>
             <div>
@@ -32,6 +35,7 @@
                     type="password"
                     placeholder="Confirm Password"
                     class="w-full p-2 border border-gray-300 rounded-md"
+                    required
                 />
             </div>
             <button
