@@ -20,11 +20,6 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(prepend: [
             'stateful', // Register Sanctum's middleware for stateful authentication
         ]);
-        $middleware->group('api', [
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \Illuminate\Http\Middleware\HandleCors::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
