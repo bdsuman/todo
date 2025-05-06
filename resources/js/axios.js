@@ -1,48 +1,49 @@
-import axios from 'axios';
-// import { useToast } from 'vue-toastification';
+import axios from "axios";
+import router from "@/router";
+import { useAuthStore } from "@/stores/auth";
 
 axios.defaults.withCredentials = true;
 axios.defaults.headers = {
-    'Access-Control-Allow-Origin': '*',
-    Accept: 'application/json',
-    'X-Value': true,
+    "Access-Control-Allow-Origin": "*",
+    Accept: "application/json",
+    "X-Value": true,
 };
-axios.defaults.baseURL = 'http://localhost:8000'; // Replace with your actual base URL
 
-// Request Interceptor
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
+
 axios.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem("token");
         if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
+            config.headers["Authorization"] = `Bearer ${token}`;
         }
         return config;
     },
-    (error) => {
-        return Promise.reject(error);
-    }
+    (error) => Promise.reject(error)
 );
 
-// Response Interceptor
 axios.interceptors.response.use(
-    (response) => {
-        return response;
-    },
-    (error) => {
-        const currentRoute = window.location.pathname;
-        if (error.response && [401].includes(error.response.status) && currentRoute !== '/login') {
-            localStorage.removeItem('token');
-            // const toast = useToast();
-            // toast.error(error.response.data.message, {
-            //     position: 'bottom-center',
-            // });
-            return (window.location = '/login');
+    (response) => response,
+    async (error) => {
+        const status = error.response?.status;
+        const currentRoute = router.currentRoute.value.fullPath;
+        const authStore = useAuthStore();
+
+        if (status === 401 && currentRoute !== "/login") {
+            localStorage.removeItem("token");
+            localStorage.removeItem("user");
+            authStore.user = null;
+            authStore.token = null;
+            authStore.isAuthenticated = false;
+            await router.push("/login");
         }
 
-        if (error.response && [404].includes(error.response.status)) {
-            return (window.location = '/404');
+        if (status === 404) {
+            await router.push("/login");
         }
 
         return Promise.reject(error);
     }
 );
+
+export default axios;

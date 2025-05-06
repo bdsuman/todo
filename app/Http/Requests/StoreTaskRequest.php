@@ -8,7 +8,7 @@ class StoreTaskRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // Optionally add auth logic if needed
+        return true; 
     }
 
     public function rules(): array
