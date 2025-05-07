@@ -3,14 +3,9 @@ import router from "@/router";
 import { useAuthStore } from "@/stores/auth";
 
 axios.defaults.withCredentials = true;
-axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-axios.defaults.headers = {
-    "Access-Control-Allow-Origin": "*",
-    Accept: "application/json",
-    "X-Value": true,
-};
+axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+axios.defaults.headers.common["Accept"] = "application/json";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL;
 axios.interceptors.request.use(
     (config) => {
         const token = localStorage.getItem("token");

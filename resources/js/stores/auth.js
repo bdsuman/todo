@@ -4,25 +4,25 @@ import router from "@/router";
 
 export const useAuthStore = defineStore("auth", {
     state: () => ({
-        user: null,
+        user: JSON.parse(localStorage.getItem("user")) || null,
         token: localStorage.getItem("token") || null,
         tasks: [],
         isAuthenticated: !!localStorage.getItem("token"),
         error: null,
         success: null,
     }),
+
     actions: {
         clearMessages() {
             setTimeout(() => {
                 this.error = null;
                 this.success = null;
-            }, 5000);
+            }, 3000);
         },
 
         async login(form) {
             try {
-                await axios.get("/sanctum/csrf-cookie");
-                const res = await axios.post("/api/login", form);
+                const res = await axios.post(route("login"), form);
                 this.user = res.data.user;
                 this.token = res.data.token;
                 this.isAuthenticated = true;
@@ -38,7 +38,7 @@ export const useAuthStore = defineStore("auth", {
 
         async logout() {
             try {
-                await axios.post("/api/logout");
+                await axios.post(route("logout"));
                 this.user = null;
                 this.token = null;
                 this.isAuthenticated = false;
@@ -55,8 +55,7 @@ export const useAuthStore = defineStore("auth", {
 
         async register(form) {
             try {
-                await axios.get("/sanctum/csrf-cookie");
-                await axios.post("/api/register", form);
+                await axios.post(route("register"), form);
                 this.success = "Registration successful";
                 this.error = null;
                 await router.push("/login");
@@ -70,7 +69,7 @@ export const useAuthStore = defineStore("auth", {
         async fetchTasks() {
             if (this.isAuthenticated) {
                 try {
-                    const res = await axios.get("/api/tasks");
+                    const res = await axios.get(route("tasks.index"));
                     this.tasks = res.data;
                 } catch (err) {
                     this.error = "Failed to load tasks";
@@ -81,7 +80,7 @@ export const useAuthStore = defineStore("auth", {
 
         async createTask(newTask) {
             try {
-                const res = await axios.post("/api/tasks", newTask);
+                const res = await axios.post(route("tasks.store"), newTask);
                 this.tasks.unshift(res.data);
                 this.success = "Task created successfully";
             } catch (err) {
@@ -93,12 +92,10 @@ export const useAuthStore = defineStore("auth", {
 
         async updateTask(task) {
             try {
-                const response = await axios.put(`/api/tasks/${task.id}`, task);
-                const index = this.tasks.findIndex(
-                    (t) => String(t.id) === String(task.id)
-                );
+                const res = await axios.put(route("tasks.update", task.id), task);
+                const index = this.tasks.findIndex(t => String(t.id) === String(task.id));
                 if (index !== -1) {
-                    this.tasks.splice(index, 1, response.data);
+                    this.tasks.splice(index, 1, res.data);
                 }
                 this.success = "Task updated successfully";
             } catch (err) {
@@ -110,8 +107,8 @@ export const useAuthStore = defineStore("auth", {
 
         async deleteTask(id) {
             try {
-                await axios.delete(`/api/tasks/${id}`);
-                this.tasks = this.tasks.filter((task) => task.id !== id);
+                await axios.delete(route("tasks.destroy", id));
+                this.tasks = this.tasks.filter(task => task.id !== id);
                 this.success = "Task deleted successfully";
             } catch (err) {
                 this.error = "Task deletion failed";

@@ -1,9 +1,10 @@
 {
     "private": true,
-    "type": "module",
+        "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "ziggy:generate": "php artisan ziggy:generate resources/js/ziggy.js",
+        "dev": "npm run ziggy:generate && vite",
+        "build": "npm run ziggy:generate && vite build"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.1.5",
@@ -20,6 +21,7 @@
     },
     "dependencies": {
         "pinia": "^3.0.2",
-        "vue-router": "^4.5.1"
+        "vue-router": "^4.5.1",
+        "ziggy-js": "^2.5.2"
     }
 }

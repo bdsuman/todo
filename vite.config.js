@@ -15,11 +15,13 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': '/resources/js',
+            "@css": '/resources/css',
+            "@image": '/resources/images',
         },
     },
     build: {
         rollupOptions: {
-            input: 'resources/js/app.js',
+            input:  ['resources/css/app.css', 'resources/js/app.js', ],
         },
     },
 });
