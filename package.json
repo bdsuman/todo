@@ -22,6 +22,6 @@
     "dependencies": {
         "pinia": "^3.0.2",
         "vue-router": "^4.5.1",
-        "ziggy-js": "^2.5.2"
+        "ziggy-js": "^2.6.0"
     }
 }
